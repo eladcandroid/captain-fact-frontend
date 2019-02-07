@@ -28,6 +28,8 @@ import Message from '../Utils/Message'
 import NotificationDetails from '../Notifications/NotificationDetails'
 import { TimeSince } from '../Utils/TimeSince'
 import Container from '../StyledUtils/Container'
+import { Span } from '../StyledUtils/Text'
+import NotificationsPopupContent from '../Notifications/NotificationsPopupContent';
 
 const NavbarContainer = styled(Flex)`
   position: fixed;
@@ -106,7 +108,7 @@ const Navbar = ({
   toggleSidebar,
   loggedInUser,
   isAuthenticated,
-  loggedInUserLoading,
+  loggedInUserLoading
 }) => {
   return (
     <Box>
@@ -114,11 +116,7 @@ const Navbar = ({
       <NavbarContainer px={2}>
         {/* Left */}
         <Flex alignItems="center">
-          <Container
-            display="flex"
-            alignItems="center"
-            height={theme.navbarHeight - 1}
-          >
+          <Container display="flex" alignItems="center" height={theme.navbarHeight - 1}>
             <MenuToggleSwitch onClick={() => toggleSidebar()} />
             <StyledLink className="logo" to="/" ml={1}>
               <Logo height={theme.navbarHeight - 24} borderless />
@@ -136,6 +134,7 @@ const Navbar = ({
                 <Popup
                   position="bottom right"
                   offsetX={-12}
+                  contentStyle={{ minWidth: 400 }}
                   trigger={(
                     <UnstyledButton mr={[3, 4]}>
                       <Bell size={24} />
@@ -150,37 +149,7 @@ const Navbar = ({
                         return <ErrorView error={error} />
                       }
 
-                      return (
-                        <Flex flexDirection="column" alignItems="center">
-                          <Box mb={3} p={[2, 4]}>
-                            {notifications.length === 0 ? (
-                              <Message>
-                                There's no notification in here yet. They'll start
-                                appearing once someone reply to one of your comments or if
-                                an action is made on a video you follow.
-                              </Message>
-                            ) : (
-                              <Flex flexDirection="column">
-                                {notifications.map(n => (
-                                  <NotificationDetails key={n.id} notification={n}>
-                                    {({ message, seenAt, insertedAt }) => (
-                                      <Flex>
-                                        <Box>{message}</Box>
-                                        <Box mx={2}>|</Box>
-                                        <Box>{seenAt ? 'Seen' : 'Not seen'}</Box>
-                                        <Box mx={2}>|</Box>
-                                        <Box>
-                                          <TimeSince time={insertedAt} />
-                                        </Box>
-                                      </Flex>
-                                    )}
-                                  </NotificationDetails>
-                                ))}
-                              </Flex>
-                            )}
-                          </Box>
-                        </Flex>
-                      )
+                      return <NotificationsPopupContent notifications={notifications}/>
                     }}
                   </Notifications>
                 </Popup>
